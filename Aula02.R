@@ -6,13 +6,12 @@ Animais_Alimentos = data.frame(Animais, Alimentos)
 write.csv2(Animais_Alimentos, "animais_alimentos.csv", row.names = FALSE)
 
 remove(Animais_Alimentos)
+
 ## aula 02 ##
 
 setwd("/Users/viniciuspierre/Documents/GitHub/aprendendo-r")  
 install.packages("tidyverse", dependencies = TRUE)
 library("tidyverse")
-
-## oi amigue lucas
 
 cces = read_csv("cces_sample.csv")
 
