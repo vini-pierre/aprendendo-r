@@ -1,0 +1,70 @@
+---
+title: "Aula04"
+output: html_document
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+library(tidyverse)
+library(ggplot2)
+
+dados = read_delim("https://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt")
+
+dados_2007 = filter(dados, year == 2007)
+```
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+g1 = ggplot(dados_2007, aes(x =continent, fill = continent)) +
+    geom_bar() +
+    scale_fill_brewer() +
+    labs(title = "Países por continente",
+       subtitle = "Gap Minder 2007",
+       y = "",
+       x = "",
+       fill = "Continente") +
+    theme_classic()
+g1
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+g2 = ggplot(dados_2007, aes(x = continent, y = lifeExp, fill = continent)) +
+    geom_boxplot() +
+    scale_fill_brewer(palette = "Purples") +
+    guides(fill = "none")
+    labs(title = "Expectativa de vida por continente",
+      subtitle = "Gapminder 2007",
+      x = "",
+      y = "Expectativa de vida - em anos")
+g2
+```
+
+
+### Chart C
+
+```{r}
+g3 = ggplot(dados_2007, aes(x = gdpPercap, y = lifeExp)) +
+    geom_point(aes(color = continent), size = 3) +
+    labs(title = "Expectativa X PIB per capita",
+         subtitle = "Gapminder 2007",
+         x = "PIB per capito",
+         y = "Expectativa de vida",
+         color = "Continente") +
+    theme_classic()
+g3
+```
+

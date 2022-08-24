@@ -6,63 +6,131 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Como criar gráficos e tabelas?
 
-```{r, include=FALSE}
+```{r, include = FALSE}
 library(tidyverse)
 library(ggplot2)
-dados = read_delim(file = "https://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt") 
+
+dados = read_delim("https://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt")
 
 dados_2007 = filter(dados, year == 2007)
+
 ```
 
-## Este é o gráfico de colunas mais simples possível
+Este é o gráfico de colunas mais simples possível
+
+```{r , echo = FALSE}
+ggplot(dados_2007, aes(x =continent))+
+  geom_bar()
+```
+
+O argumento aes que é a estética indica o sistema de coordenadas
+do gráfico.
+
+```{r , echo = TRUE}
+ggplot(dados_2007, aes(y =continent))+
+  geom_bar()
+```
+
+Para colorir, basta inserir uma variável no argumento *fill*.
+
+```{r , echo = TRUE}
+ggplot(dados_2007, aes(x =continent, fill = continent))+
+  geom_bar()
+```
+
+Para colorir somente a borda, utilize o argumento **color**.
+
+```{r , echo = TRUE}
+ggplot(dados_2007, aes(x =continent, color = continent))+
+  geom_bar()
+```
+
+Para colorir no padrão sombreado, utilizar o layer "scale_fill_brewer".
+
+```{r , echo = TRUE}
+ggplot(dados_2007, aes(x =continent, fill = continent))+
+  geom_bar()+
+  scale_fill_brewer("Blues")
+```
+
+As *annotations* são os títulos dos eixos, geral, etc. Esse layer é chamado de **labs**.
+
+```{r , echo = TRUE}
+ggplot(dados_2007, aes(x =continent, fill = continent))+
+  geom_bar()+
+  scale_fill_brewer() +
+  labs(title = "Países por continente",
+       subtitle = "Gap Minder 2007",
+       y = "",
+       x = "",
+       fill = "Continente")
+  
+```
+
+Os temas são como os designs do Excel que modificam a área de gráfico.
+
+```{r , echo = FALSE}
+g1 = ggplot(dados_2007, aes(x =continent, fill = continent)) +
+    geom_bar() +
+    scale_fill_brewer() +
+    labs(title = "Países por continente",
+       subtitle = "Gap Minder 2007",
+       y = "",
+       x = "",
+       fill = "Continente") +
+    theme_classic()
+g1
+```
+
+Esse gráfico utiliza o theme_classic
+
+### Boxplot
+
+```{r, echo = FALSE}
+g2 = ggplot(dados_2007, aes(x = continent, y = lifeExp, fill = continent)) +
+    geom_boxplot() +
+    scale_fill_brewer(palette = "Purples") +
+    guides(fill = "none")
+    labs(title = "Expectativa de vida por continente",
+      subtitle = "Gapminder 2007",
+      x = "",
+      y = "Expectativa de vida - em anos")
+g2
+```
+
+### Diagrama de dispersão
 
 ```{r, echo = FALSE}
 
-ggplot(dados_2007, aes(x = continent)) + geom_bar()
+g3 = ggplot(dados_2007, aes(x = gdpPercap, y = lifeExp)) +
+    geom_point(aes(color = continent), size = 3) +
+    labs(title = "Expectativa X PIB per capita",
+         subtitle = "Gapminder 2007",
+         x = "PIB per capito",
+         y = "Expectativa de vida",
+         color = "Continente") +
+    theme_classic()
+g3
+``` 
 
+```{r}
+tabela = table(dados_2007$continent)
+tabela = data.frame(tabela)
+degrade = colorRampPalette(c("darkblue", "lightblue"))
+
+g4 = ggplot(tabela, aes(x = "",y = Freq, fill = Var1)) +
+    geom_bar(stat="identity", width = 1) +
+    scale_fill_manual(values=degrade(nrow(tabela))) +
+    coord_polar("y",start = 0) +
+    labs(fill = "Continente")
+
+g4
+library(gridExtra)
+grid.arrange(g1,g2,g3,g4, ncol = 2)
 ```
 
-## O argumento aes que é a estética indica o sistema de coordenadas do gráfico
-
-```{r, echo = FALSE}
-
-ggplot(dados_2007, aes(y = continent)) + geom_bar()
-
-```
-
-## Para colorir, basta inserir uma variável no argumneto *fill*
-
-```{r, echo = FALSE}
-
-ggplot(dados_2007, aes(x = continent, fill = continent)) + geom_bar()
-
-```
-
-## Para colorir somente a borda, utilize o argumento **color**
-
-```{r, echo = FALSE}
-
-ggplot(dados_2007, aes(x = continent, fill = color)) + geom_bar()
-
-```
-
-## Para colorir no padrão sombreado, utilizar o layer
-
-```{r, echo = FALSE}
-
-ggplot(dados_2007, aes(x = continent, fill = continent)) + geom_bar() + scale_fill_brewer() 
-
-```
-
-## As *annotations* são os títulos dos eixos, geral, etc. Esse layer é chamado de **labs**
-
-```{r, echo = FALSE}
-
-ggplot(dados_2007, aes(x = continent, fill = continent)) + geom_bar() + scale_fill_brewer() + labs(tittle = "Países por continente", subtitle = "Gap Minder 2007", y = "", x = "", fill = "Continente")
-
-```
