@@ -57,14 +57,13 @@ g2
 ### Chart C
 
 ```{r}
-g3 = ggplot(dados_2007, aes(x = gdpPercap, y = lifeExp)) +
-    geom_point(aes(color = continent), size = 3) +
-    labs(title = "Expectativa X PIB per capita",
-         subtitle = "Gapminder 2007",
-         x = "PIB per capito",
-         y = "Expectativa de vida",
-         color = "Continente") +
-    theme_classic()
-g3
+tabela = table(gapMinder_2007$continent)
+tabela = data.frame(tabela)
+degrade = colorRampPalette(c("darkblue", "lightblue"))
+
+graf1 <- ggplot(tabela, aes(x="",y= Freq,fill = Var1))+
+  geom_bar(stat="identity", width = 1)+
+  scale_fill_manual(values=degrade(nrow(tabela)))+
+  coord_polar("y",start = 0)
 ```
 
